@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: SyncNonBlocking
+  profiles:
+    active: reactive
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+
+logging:
+  level:
+    root: INFO
+    org.springframework: WARN
+    com.example: DEBUG

@@ -82,7 +82,18 @@ curl 'http://localhost:8080/benchmark/reactive/12' -o /dev/null -s -w 'Total: %{
 
 ```bash
 # Build the image
-mvn spring-boot:build-image
+# mvn spring-boot:build-image
+
+# Build container image multi-platform
+# docker buildx build --platform=linux/amd64,linux/arm64 -t jsa4000/demo:0.0.1-SNAPSHOT --push .
+
+# Using Jib (Almost supported, not locally)
+# https://github.com/GoogleContainerTools/jib/blob/master/docs/faq.md#how-do-i-specify-a-platform-in-the-manifest-list-or-oci-index-of-a-base-image
+mvn jib:build
+
+# Get Docker images platforms
+docker pull  jsa4000/demo:0.0.1-SNAPSHOT
+docker image inspect jsa4000/demo:0.0.1-SNAPSHOT
 
 # Start the image exposing port 8080
 # Profiles: sequential, parallel or  reactive

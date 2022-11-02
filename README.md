@@ -71,10 +71,10 @@ Benchmarks
 # Sequential (22s)
 curl 'http://localhost:8080/benchmark/sequential/12' -o /dev/null -s -w 'Total: %{time_total}s\n'
 
-# Parallel (4s)
+# Parallel (12s)
 curl 'http://localhost:8080/benchmark/parallel/12' -o /dev/null -s -w 'Total: %{time_total}s\n'
 
-# Reactive (2s)
+# Reactive (3s)
 curl 'http://localhost:8080/benchmark/reactive/12' -o /dev/null -s -w 'Total: %{time_total}s\n'
 ```
 
@@ -95,7 +95,7 @@ mvn clean package
 mvn jib:build
 
 # Get Docker images platforms
-docker pull  jsa4000/demo:0.0.1-SNAPSHOT
+docker pull jsa4000/demo:0.0.1-SNAPSHOT
 docker image inspect jsa4000/demo:0.0.1-SNAPSHOT
 
 # Start the image exposing port 8080

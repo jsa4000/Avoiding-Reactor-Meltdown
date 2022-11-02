@@ -81,10 +81,13 @@ curl 'http://localhost:8080/benchmark/reactive/12' -o /dev/null -s -w 'Total: %{
 ## Build Image
 
 ```bash
-# Build the image
+# Build Jar Package
+mvn clean package
+
+# Build the image (Does not support Multiple Platforms Builds)
 # mvn spring-boot:build-image
 
-# Build container image multi-platform
+# Build container image multi-platform using Docker buildx
 # docker buildx build --platform=linux/amd64,linux/arm64 -t jsa4000/demo:0.0.1-SNAPSHOT --push .
 
 # Using Jib (Almost supported, not locally)

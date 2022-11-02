@@ -6,7 +6,7 @@ import reactor.core.scheduler.Scheduler;
 import reactor.core.scheduler.Schedulers;
 import reactor.test.StepVerifier;
 
-public class ReactorWorkflow {
+public class ReactorWorkflowBT {
 
     private final Scheduler DEFAULT_SCHEDULER = Schedulers.boundedElastic();
 

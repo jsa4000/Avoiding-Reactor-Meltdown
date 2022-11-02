@@ -6,9 +6,10 @@ import java.util.List;
 import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
+import static com.example.demo.threading.ThreadingUtils.*;
+
 public class RunnableCallableIT {
 
-    public static final long SLEEP_TIME = 1000L;
     public static final int N_THREADS = 4;
 
     /**
@@ -94,7 +95,7 @@ public class RunnableCallableIT {
     @Test
     void runnableMultipleAsyncWithExecutorServiceTest() throws Exception {
         // Create Lambda/Anonymous function that implements Runnable default method
-        List<Runnable> tasks = List.of(this::firstStep, this::secondStep);
+        List<Runnable> tasks = List.of(ThreadingUtils::firstStep, ThreadingUtils::secondStep);
         // Create executorService with a pool of threads
         ExecutorService executorService = Executors.newFixedThreadPool(N_THREADS);
         // For each task submit to the ExecutorService
@@ -146,7 +147,7 @@ public class RunnableCallableIT {
     @Test
     void callableMultipleAsyncWithLambdaTest() throws Exception {
         // Create Lambda/Anonymous function that implements Callable default method
-        List<Callable<String>> tasks = List.of(this::getFirstStep, this::getSecondStep);
+        List<Callable<String>> tasks = List.of(ThreadingUtils::getFirstStep, ThreadingUtils::getSecondStep);
         // Callable function cannot be used directly using Thread class.
         ExecutorService executorService = Executors.newFixedThreadPool(N_THREADS);
         // Submit a task to the executor Service that return a future with the result
@@ -164,7 +165,7 @@ public class RunnableCallableIT {
     @Test
     void callableMultipleSyncWithLambdaTest() throws Exception {
         // Create Lambda/Anonymous function that implements Callable default method
-        List<Callable<String>> tasks = List.of(this::getFirstStep, this::getSecondStep);
+        List<Callable<String>> tasks = List.of(ThreadingUtils::getFirstStep, ThreadingUtils::getSecondStep);
         // Callable function cannot be used directly using Thread class.
         ExecutorService executorService = Executors.newFixedThreadPool(N_THREADS);
         // Submit a task to the executor Service that return a future with the result. Blocking
@@ -176,33 +177,5 @@ public class RunnableCallableIT {
         futures.forEach(System.out::println);
     }
 
-    private void firstStep() {
-        System.out.println("firstStep Start");
-        sleep(SLEEP_TIME);
-        System.out.println("firstStep Finished");
-    }
 
-    private void secondStep() {
-        System.out.println("secondStep Start");
-        sleep(SLEEP_TIME);
-        System.out.println("secondStep Finished");
-    }
-
-    private String getFirstStep() {
-        firstStep();
-        return "getFirstStep";
-    }
-
-    private String getSecondStep() {
-        secondStep();
-        return "getSecondStep";
-    }
-
-    private void sleep(Long millis) {
-        try {
-            Thread.sleep(millis);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-    }
 }

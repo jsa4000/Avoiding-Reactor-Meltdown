@@ -3,6 +3,7 @@ package com.example.demo.threading;
 import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 public class CompletableFutureIT {
 
@@ -28,9 +29,10 @@ public class CompletableFutureIT {
      */
 
     @Test
-    void supplierSyncTest() {
-        CompletableFuture completableFuture = new CompletableFuture();
-
+    void supplierSyncTest() throws ExecutionException, InterruptedException {
+        CompletableFuture<String> completableFuture = CompletableFuture
+                .supplyAsync(ThreadingUtils::getFirstStep);
+        System.out.println(completableFuture.get());
     }
 
     @Test
@@ -42,4 +44,6 @@ public class CompletableFutureIT {
     void functionSyncTest() {
 
     }
+
+
 }

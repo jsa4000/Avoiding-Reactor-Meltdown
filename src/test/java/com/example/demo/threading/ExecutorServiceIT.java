@@ -8,18 +8,17 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.time.Duration;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import static com.example.demo.threading.ThreadingUtils.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 
 @ExtendWith(SpringExtension.class)
 public class ExecutorServiceIT {
 
-    public static final long SLEEP_TIME = 1000L;
     public static final int N_THREADS = 4;
 
     /**
@@ -56,7 +55,7 @@ public class ExecutorServiceIT {
         executorService.shutdown();
         // Wait until all the task ends. This will block the MainThread
         System.out.println("This is Main Thread");
-        assertTimeoutPreemptively(getMaxTimeout(SLEEP_TIME ), () ->
+        assertTimeoutPreemptively(getMaxTimeout(), () ->
                 executorService.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS));
     }
 
@@ -74,26 +73,8 @@ public class ExecutorServiceIT {
         // Since the ExecutorService has not been shutdown it will wait until the timeout expires
         System.out.println("This is Main Thread");
         assertThrows(AssertionFailedError.class, () ->
-                assertTimeoutPreemptively(getMaxTimeout(SLEEP_TIME ), () ->
+                assertTimeoutPreemptively(getMaxTimeout(), () ->
                         executorService.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS)));
-    }
-
-    private void doTask() {
-        System.out.println("doTask Start");
-        sleep(SLEEP_TIME);
-        System.out.println("doTask Stop");
-    }
-
-    private Duration getMaxTimeout(Long millis) {
-        return Duration.ofMillis(Double.valueOf(millis + (millis * 0.2)).longValue());
-    }
-
-    private void sleep(Long millis) {
-        try {
-            Thread.sleep(millis);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
     }
 
 }

@@ -34,6 +34,16 @@ public class ThreadingUtils {
         return "getSecondStep";
     }
 
+    public static Integer multiply(Integer number) {
+        sleep(SLEEP_TIME);
+        return number * 2;
+    }
+
+    public static Integer printThread(Integer number) {
+        System.out.println(number + " " + Thread.currentThread().getName());
+        return number;
+    }
+
     public static Duration getMaxTimeout() {
         return Duration.ofMillis(Double.valueOf(SLEEP_TIME + (SLEEP_TIME * 0.2)).longValue());
     }

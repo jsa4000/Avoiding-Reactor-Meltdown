@@ -12,7 +12,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import static com.example.demo.threading.ThreadingUtils.*;
+import static com.example.demo.threading.ThreadingUtils.doTask;
+import static com.example.demo.threading.ThreadingUtils.getMaxTimeout;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 

@@ -5,6 +5,9 @@ import org.junit.jupiter.api.Test;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
+import static com.example.demo.threading.ThreadingUtils.SLEEP_TIME;
+import static com.example.demo.threading.ThreadingUtils.sleep;
+
 public class CompletableFutureIT {
 
     /**
@@ -29,21 +32,76 @@ public class CompletableFutureIT {
      */
 
     @Test
-    void supplierSyncTest() throws ExecutionException, InterruptedException {
+    void simpleCompletableFutureWithSupplierSyncTest() throws ExecutionException, InterruptedException {
         CompletableFuture<String> completableFuture = CompletableFuture
                 .supplyAsync(ThreadingUtils::getFirstStep);
+        // Since previous method creates a new thread (async), it is necessary to wait until
+        // the thread ends so the task finally ends.
+        System.out.println("This is Main Thread");
         System.out.println(completableFuture.get());
     }
 
     @Test
-    void consumerSyncTest() {
-
+    void simpleCompletableFutureWithSupplierAsyncTest() throws ExecutionException, InterruptedException {
+        CompletableFuture<String> completableFuture = CompletableFuture
+                .supplyAsync(ThreadingUtils::getFirstStep);
+        // Since previous method creates a new thread (async), it is necessary to wait until
+        // the thread ends so the task finally ends.
+        System.out.println("This is Main Thread");
+        sleep(SLEEP_TIME);
     }
 
     @Test
-    void functionSyncTest() {
-
+    void chainCompletableFutureWithSupplierSyncTest() throws ExecutionException, InterruptedException {
+        CompletableFuture<Void> completableFuture = CompletableFuture
+                .supplyAsync(ThreadingUtils::getFirstStep)
+                .thenApply(step -> ThreadingUtils.getSecondStep())
+                .thenRun(ThreadingUtils::doTask);
+        // Since previous method creates a new thread (async), it is necessary to wait until
+        // the thread ends so the task finally ends.
+        System.out.println("This is Main Thread");
+        completableFuture.get();
     }
 
+    @Test
+    void combineCompletableFutureWithSupplierSyncTest() throws ExecutionException, InterruptedException {
+        CompletableFuture<String> completableFuture = CompletableFuture
+                .supplyAsync(ThreadingUtils::getFirstStep)
+                .thenCombine(CompletableFuture.supplyAsync(ThreadingUtils::getSecondStep),
+                        (x, y) -> String.format("%s + %s", x, y));
+        // Since previous method creates a new thread (async), it is necessary to wait until
+        // the thread ends so the task finally ends.
+        System.out.println("This is Main Thread");
+        System.out.println(completableFuture.get());
+    }
+
+    @Test
+    void parallelCompletableFutureWithSupplierSyncTest() throws ExecutionException, InterruptedException {
+        CompletableFuture<String> firstStep = CompletableFuture.supplyAsync(ThreadingUtils::getFirstStep);
+        CompletableFuture<String> secondStep = CompletableFuture.supplyAsync(ThreadingUtils::getSecondStep);
+        CompletableFuture<Void> combinedFuture = CompletableFuture.allOf(firstStep,secondStep);
+        // Since previous method creates a new thread (async), it is necessary to wait until
+        // the thread ends so the task finally ends.
+        System.out.println("This is Main Thread");
+        combinedFuture.get();
+        // Print the future after waiting for futures to finish
+        System.out.println(firstStep.get());
+        System.out.println(secondStep.get());
+    }
+
+    @Test
+    void handleCompletableFutureWithSupplierSyncTest() throws ExecutionException, InterruptedException {
+        CompletableFuture<Void> completableFuture = CompletableFuture
+                .supplyAsync(ThreadingUtils::getFirstStep)
+                // Force an exceptions within the chain
+                .thenApply(step -> new RuntimeException("Thrown Error in CompletableFunction"))
+                .handle((ex, result) -> System.out.printf("%s - %s%n", ex.getMessage(), result))
+                // Finally execute the run task
+                .thenRun(ThreadingUtils::doTask);
+        // Since previous method creates a new thread (async), it is necessary to wait until
+        // the thread ends so the task finally ends.
+        System.out.println("This is Main Thread");
+        completableFuture.get();
+    }
 
 }

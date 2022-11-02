@@ -53,7 +53,7 @@ public class ProjectReactorIT {
                 .map(str -> ThreadingUtils.getSecondStep())
                 .doFinally(str -> ThreadingUtils.doTask());
         // Similar to subscribe but blocks the main thread
-        System.out.printf(Objects.requireNonNull(result.block()));
+        System.out.println(Objects.requireNonNull(result.block()));
     }
 
     @Test

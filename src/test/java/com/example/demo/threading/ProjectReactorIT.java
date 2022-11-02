@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Mono;
 
 import java.util.Objects;
+import java.util.concurrent.ExecutionException;
 
 import static com.example.demo.threading.ThreadingUtils.SLEEP_TIME;
 import static com.example.demo.threading.ThreadingUtils.sleep;
@@ -42,7 +43,7 @@ public class ProjectReactorIT {
                 .doFinally(str -> ThreadingUtils.doTask())
                 .subscribe(System.out::println);
         // Sleep until the thread stops
-        sleep(SLEEP_TIME );
+        sleep(SLEEP_TIME);
     }
 
     @Test
@@ -53,5 +54,18 @@ public class ProjectReactorIT {
                 .doFinally(str -> ThreadingUtils.doTask());
         // Similar to subscribe but blocks the main thread
         System.out.printf(Objects.requireNonNull(result.block()));
+    }
+
+    @Test
+    void simpleReactiveNonBlockingSyncTest() throws ExecutionException, InterruptedException {
+        // Compose the Reactive Flow with NonBlocking tasks
+        Mono<String> result = Mono.just("example")
+                .flatMap(str -> ThreadingUtils.getFirstStepAsync())
+                .flatMap(str -> ThreadingUtils.getSecondStepAsync())
+                .doFinally(str -> ThreadingUtils.doTask());
+        // Similar to subscribe but blocks the main thread
+        System.out.println(result.toFuture().get());
+        // Sleep until the thread stops
+        sleep(SLEEP_TIME);
     }
 }
